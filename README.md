@@ -3,17 +3,38 @@ Python scripts to perform SNP-skimming
 
 ## Important details regarding these Python scripts
 
-- **All scripts require Python 2**
+- **These scripts require Python 2, NumPy, and SciPy**
 
-- Users must modify scripts to indicate the number of samples in their study and the columns in which their samples appear in the .vcf file. 
+- The Python scripts assume a single population appears in the VCF file and all samples in the VCF are being analyzed. In this case, users provide the number of samples as an argument to the script. 
 
-  The Python scripts assume a single population appears in the .vcf file and all samples are being analyzed simultaneously. In this case, users modify the `nsamples` variable to reflect the number of samples. 
-
-  If users have a more complicated scenario where the samples to be analyzed are a subset of samples that appear in the .vcf file, users can modify the `indivRange` variable to indicate samples to be analyzed.
+  If users have a more complicated scenario where the samples to be analyzed are a subset of samples that appear in the VCF file, users can modify the `indivRange` variable to indicate the columns in which the samples to be analyzed appear in the VCF file.
 
 - The scripts take as input a .vcf file that has been filtered to the user's specification, in terms of allowed amount of missing data or range of allele frequency.  
   - For help on generating a .vcf file, see **Preparing your VCF file** below.  
   - For help filtering a .vcf file based on missing data and range of allele frequencies (a guess based on the proportion of reads across all individuals that match the ref allele) see **Filtering VCF file** below.
+
+## Step 1: Estimate allele frequencies using MLEq.n.filter.py
+
+Use **MLEq.n.filter.py** to find maximum likelihood estimator for frequency of the ref allele (_q_) for each site in the .vcf file.  
+
+In addition, this script discards sites that are actually fixed for the ref or the alt allele. Sometimes these sites sneak through despite filtering.
+
+#### Usage
+
+> python MLEq.n.filter.py [input VCF filename] [output filename prefix] [number of samples]
+
+#### Example
+
+> python MLEq.n.filter.py slimsnps1.1.vcf slimsnps1.2 291
+
+This creates four output files: 
+1. `prefix.poly.vcf` <- A new .vcf file containing lines for non-fixed sites. (Header lines are removed)
+1. `prefix.fixed.vcf` <- A new .vcf file containing lines for fixed sites. (Header lines removed).
+1. `prefix.poly.Qs.txt` <- A tab-delimited file containing allele frequency estimates for ref base for non-fixed SNPs.
+1. `prefix.fixed.Qs.txt` <- A tab-delimited file containing allele frequency estimates for ref base for fixed SNPs.
+
+The `prefix.poly.vcf` and `prefix.poly.Qs.txt` files are used in downstream analyses, but users may also find the other two files useful to have.
+
 
 ## Preparing your VCF file
 

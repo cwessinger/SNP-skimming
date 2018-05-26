@@ -1,9 +1,19 @@
 # SNP-skimming
 Python scripts to perform SNP-skimming
 
-## Important details regarding these python scripts
+## Important details regarding these Python scripts
 
-**Use python 2.7**
+- **All scripts require Python 2**
+
+- Users must modify scripts to indicate the number of samples in their study and the columns in which their samples appear in the .vcf file. 
+
+  The Python scripts assume a single population appears in the .vcf file and all samples are being analyzed simultaneously. In this case, users modify the `nsamples` variable to reflect the number of samples. 
+
+  If users have a more complicated scenario where the samples to be analyzed are a subset of samples that appear in the .vcf file, users can modify the `indivRange` variable to indicate samples to be analyzed.
+
+- The scripts take as input a .vcf file that has been filtered to the user's specification, in terms of allowed amount of missing data or range of allele frequency.  
+  - For help on generating a .vcf file, see **Preparing your VCF file** below.  
+  - For help filtering a .vcf file based on missing data and range of allele frequencies (a guess based on the proportion of reads across all individuals that match the ref allele) see **Filtering VCF file** below.
 
 ## Preparing your VCF file
 

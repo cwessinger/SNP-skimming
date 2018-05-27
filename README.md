@@ -43,7 +43,7 @@ The input files should be `<prefix>.poly.vcf` and `<prefix>.poly.Qs.txt` files o
 
 #### Usage
 
-> python MLEtk.allindivs.py [input VCF filename] [input allele freq filename] [output τk filename] [number of individuals]
+> `python MLEtk.allindivs.py [input VCF filename] [input allele freq filename] [output τk filename] [number of individuals]`
 
 #### Example
 
@@ -64,6 +64,18 @@ Use **MLEtk.byindivs.py** to find τk values for each individual.
 #### Example
 
 > python MLEtk.byindivs.py slimsnps1.2.poly.vcf slimsnps1.2.poly.Qs.txt slimsnps1.2.poly.tks.byindivs.txt 291
+
+## Step 3: re-estimate allele frequencies (*q*s) using MLEq.reest.py.
+
+Use **MLEq.reest.py** to re-estimate frequency of the reference allele, given read depth and global τk values estimated in step 2. 
+
+#### Usage
+
+> python MLEq.reest.py [input VCF filename (step 1)] [input allele freq filename (step 1)] [input τk filename (step 2)] [output reest allele freq filename] [number of individuals]
+
+#### Example
+
+> python MLEq.reest.py slimsnps1.2.poly.vcf slimsnps1.2.poly.Qs.txt slimsnps1.2.poly.tks.txt slimsnps1.2.poly.reestQs.txt 291
 
 
 ## Preparing your VCF file

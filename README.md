@@ -3,7 +3,7 @@ Python scripts to perform SNP-skimming
 
 ## Important things about these Python scripts
 
-- **These scripts require Python 2, NumPy, and SciPy**
+- **These scripts require Python 2, NumPy, SciPy, and Pandas**
 
 - The Python scripts assume a single population appears in the VCF file and all individual samples in the VCF are being analyzed. In this case, one provides the number of individuals as an argument to the script. 
 
@@ -43,7 +43,7 @@ The input files should be `<prefix>.poly.vcf` and `<prefix>.poly.Qs.txt` files o
 
 #### Usage
 
-> `python MLEtk.allindivs.py [input VCF filename] [input allele freq filename] [output τk filename] [number of individuals]`
+> python MLEtk.allindivs.py [input VCF filename] [input allele freq filename] [output τk filename] [number of individuals]
 
 #### Example
 
@@ -77,6 +77,7 @@ Use **MLEq.reest.py** to re-estimate frequency of the reference allele, given re
 
 > python MLEq.reest.py slimsnps1.2.poly.vcf slimsnps1.2.poly.Qs.txt slimsnps1.2.poly.tks.txt slimsnps1.2.poly.reestQs.txt 291
 
+## Step 4: estimate associations with phenotype using MLE 
 
 ## Preparing your VCF file
 

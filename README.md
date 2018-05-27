@@ -21,11 +21,11 @@ In addition, this script discards sites that are actually fixed for the ref or t
 
 #### Usage
 
-> python MLEq.n.filter.py [input VCF filename] [output prefix] [number of individuals]
+> python MLEq.n.filter.py [input VCF] [output prefix] [# indivs]
 
 #### Example
 
-> python MLEq.n.filter.py slimsnps1.1.vcf slimsnps1.2 291
+> `python MLEq.n.filter.py snps1.1.vcf snps1.2 291`
 
 This creates four output files: 
 1. `<prefix>.poly.vcf` <- A new .vcf file containing lines for non-fixed sites. (Header lines are removed)
@@ -43,11 +43,11 @@ The input files should be `<prefix>.poly.vcf` and `<prefix>.poly.Qs.txt` files o
 
 #### Usage
 
-> python MLEtk.allindivs.py [input VCF filename] [input allele freq filename] [output τk filename] [number of individuals]
+> python MLEtk.allindivs.py [input VCF] [input qs file] [output τks file] [# indivs]
 
 #### Example
 
-> python MLEtk.allindivs.py slimsnps1.2.poly.vcf slimsnps1.2.poly.Qs.txt slimsnps1.2.poly.tks.txt 291
+> `python MLEtk.allindivs.py snps1.2.poly.vcf snps1.2.poly.Qs.txt snps1.2.poly.tks.txt 291`
 
 The output file contains the number of sites, proportion heterozygous genotypes, and maximum likelihood estimate of τk (for k values ranging from 1–15). Depending on how this these results look, one could extend the calculations to higher read depth values by modifying the `max_kvalue` variable in the script.
 
@@ -59,25 +59,57 @@ Use **MLEtk.byindivs.py** to find τk values for each individual.
 
 #### Usage
 
-> python MLEtk.byindivs.py [input VCF filename] [input allele freq filename] [output τk filename] [number of individuals]
+> python MLEtk.byindivs.py [input VCF] [input qs file] [output τks file] [# indivs]
 
 #### Example
 
-> python MLEtk.byindivs.py slimsnps1.2.poly.vcf slimsnps1.2.poly.Qs.txt slimsnps1.2.poly.tks.byindivs.txt 291
+> `python MLEtk.byindivs.py snps1.2.poly.vcf snps1.2.poly.Qs.txt snps1.2.poly.tks.byindivs.txt 291`
 
-## Step 3: re-estimate allele frequencies (*q*s) using MLEq.reest.py.
+## Step 3: Re-estimate allele frequencies (*q*s) using MLEq.reest.py.
 
 Use **MLEq.reest.py** to re-estimate frequency of the reference allele, given read depth and global τk values estimated in step 2. 
 
 #### Usage
 
-> python MLEq.reest.py [input VCF filename (step 1)] [input allele freq filename (step 1)] [input τk filename (step 2)] [output reest allele freq filename] [number of individuals]
+> python MLEq.reest.py [input VCF] [input qs file] [input τks file] [output re-est qs file] [# indivs]
 
 #### Example
 
-> python MLEq.reest.py slimsnps1.2.poly.vcf slimsnps1.2.poly.Qs.txt slimsnps1.2.poly.tks.txt slimsnps1.2.poly.reestQs.txt 291
+> `python MLEq.reest.py snps1.2.poly.vcf snps1.2.poly.Qs.txt snps1.2.poly.tks.txt snps1.2.poly.reestQs.txt 291`
 
-## Step 4: estimate associations with phenotype using MLE 
+## Step 4: Estimate associations with phenotype using MLE 
+
+Use **MLE.phenoassoc.py** to estimate associations between sites in the VCF file and a focal phenotype. 
+
+Required input files:
+1. VCF file for variable sites (output by step 1)
+1. File containing re-estimated allele frequencies (output by step 3). Each line corresponds to a site in the VCF file.
+1. Estimated global τk values (output by step 2)
+1. Tab delimited file containing phenotypic values and a header line containing phenotype names. This file is read in by pandas read_table(). 
+
+This script optimizes multiple parameters and can be time-consuming for large VCF files. I recommend splitting the VCF file (and corresponding allele frequency file) into many subsamples and running parallel jobs, then concatenating the output files for analysis.
+
+#### Usage
+
+> python MLE.phenoassoc.py [input VCF] [input re-est qs file] [input τks file] [input phenos file] [# indivs] [pheno name] [VCF ID]
+
+Here, the [pheno name] argument should be the column header in the phenotype file for the focal phenotype to be analyzed.
+The [VCF ID] argument should be the identifier (e.g., an integer) for subsample VCF file. This VCF ID is incorporated into the output file name. If one prefers not to split the file into parallel jobs, just put a placeholder here.
+
+> `python MLE.phenoassoc.py snps1.2.poly.sub.0.vcf snps1.2.reestQs.sub.0.txt snps1.2.poly.tks.txt phenos.txt 291 stamenL 0`
+
+This file outputs the following data for each SNP in the VCF (MLE = maximum likelihood estimate):
+* `contig`: identifier of contig or scaffold in ref genome
+* `position`: position of SNP
+* `count`: number of individuals with data for the SNP
+* `q`: allele frequency (read in from the input re-est qs file)
+* `h0_mu`: MLE for sample mean phenotype under null hypothesis that phenotype does not depend on genotype
+* `h0_sigma`: MLE for sample variance in phenotype under null hypothesis
+* `h1_muRR`: MLE for mean phenotype for ref allele homozygotes under alternative hypothesis that genotypes differ in mean phenotype
+* `h1_a`: MLE for additive effect of alt allele under alternative hypothesis
+* `h1_sigma`: MLE for variance in phenotype for a given genotype under alternative hypothesis
+* `LRT`: likelihood ratio test statistic for comparing the alternative hypothesis to the null hypothesis 
+* `pval`: significance of the likelihood ratio test statistic (using chi-square distribution with 1 df)
 
 ## Preparing your VCF file
 

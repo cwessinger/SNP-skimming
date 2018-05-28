@@ -24,26 +24,27 @@ In addition, this script discards sites that are actually fixed for the ref or t
 
 > python MLEq.n.filter.py [input VCF] [output prefix] [n indivs]
 
-Arguments:
 * input VCF: this is the VCF you want to use for your analyses
 * output prefix: prefix for output filenames
 * n indivs: number of individuals with data in the VCF file
 
 #### Example
 
-> `python MLEq.n.filter.py toy.vcf toy 291`
+```
+python MLEq.n.filter.py toy.vcf toy 291
+```
 
 This creates four output files: 
-1. `toy.poly.vcf` <- A new .vcf file containing lines for non-fixed sites. (Header lines are removed)
-1. `toy.fixed.vcf` <- A new .vcf file containing lines for fixed sites. (Header lines removed).
-1. `toy.poly.Qs.txt` <- A tab-delimited file containing allele frequency estimates for ref base for non-fixed SNPs.
-1. `toy.fixed.Qs.txt` <- A tab-delimited file containing allele frequency estimates for ref base for fixed SNPs.
+1. **\<prefix\>.poly.vcf** <- A new .vcf file containing lines for non-fixed sites. (Header lines are removed)
+2. **\<prefix\>.fixed.vcf** <- A new .vcf file containing lines for fixed sites. (Header lines removed).
+3. **\<prefix\>.poly.Qs.txt** <- A tab-delimited file containing allele frequency estimates for ref base for non-fixed SNPs.
+4. **\<prefix\>.fixed.Qs.txt** <- A tab-delimited file containing allele frequency estimates for ref base for fixed SNPs.
 
-The `<prefix>.poly.vcf` and `<prefix>.poly.Qs.txt` files are used in downstream analyses, but users may also find the other two files useful to have.
+The **\<prefix\>.poly.vcf** and **\<prefix\>.poly.Qs.txt** files are used in downstream analyses, but users may also find the other two files useful to have.
 
 The allele frequency output files contain the following information:
-* contig: identifier of contig or scaffold in ref genome
-* position: position of SNP
+1. contig: identifier of contig or scaffold in ref genome
+2. position: position of SNP
 * indivs: number of individuals with data for the SNP
 * MLE_q: maximum likelihood estimate for reference allele frequency (*q*)
 
@@ -192,8 +193,10 @@ Here I describe the steps we like to take to generate this file, but other metho
     `samtools index ind1.RG.bam ind1.RG.bai`
 
 1. **Call variants using GATK** -> https://software.broadinstitute.org/gatk/  
-    java -jar GenomeAnalysisTK.jar -R refcontigs.fa -T UnifiedGenotyper -I ind1.RG.bam -I ind2.RG.bam -I ind3.RG.bam -ploidy 2 -rf BadCigar -o data.vcf`
 
+```
+java -jar GenomeAnalysisTK.jar -R refcontigs.fa -T UnifiedGenotyper -I ind1.RG.bam -I ind2.RG.bam -I ind3.RG.bam -ploidy 2 -rf BadCigar -o data.vcf
+```
 
 # Filtering your VCF file
 

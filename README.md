@@ -7,7 +7,7 @@ Python scripts to perform SNP-skimming
 
 - The scripts assume a single population appears in the VCF file and all individual samples in the VCF are being analyzed. In this case, one provides the number of individuals as an argument to the script. 
 
-  If a user has a more complicated scenario where the individuals to be analyzed are a subset of individuals that appear in the VCF file, one should modify the `indivRange` variable within the script to indicate the columns in which the samples to be analyzed appear in the VCF file.
+  If a user has a more complicated scenario where the individuals to be analyzed are a subset of individuals included in the VCF file, one should modify the `indivRange` variable within the script to indicate the columns in which the samples to be analyzed appear in the VCF file.
 
 - The scripts take as input a VCF file that has been filtered to the user's specification, in terms of allowed amount of missing data or range of allele frequency.  
   - For help on generating a VCF file, see **Preparing your VCF file** below.  
@@ -42,10 +42,10 @@ This creates four output files:
 The `<prefix>.poly.vcf` and `<prefix>.poly.Qs.txt` files are used in downstream analyses, but users may also find the other two files useful to have.
 
 The allele frequency output files contain the following information:
-* `contig`: identifier of contig or scaffold in ref genome
-* `position`: position of SNP
-* `indivs`: number of individuals with data for the SNP
-* `MLE_q`: maximum likelihood estimate for reference allele frequency (*q*)
+* contig: identifier of contig or scaffold in ref genome
+* position: position of SNP
+* indivs: number of individuals with data for the SNP
+* MLE_q: maximum likelihood estimate for reference allele frequency (*q*)
 
 
 ## Step 2: Estimate τk values across all sites and all individuals using MLEtk.allindivs.py
@@ -67,10 +67,10 @@ Arguments:
 > `python MLEtk.allindivs.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.txt 291`
 
 The output file contains the following data:
-* `depth`: read depth (*k*)
-* `totsites`: number of sites with depth *k*
-* `propRA`: proportion of genotypes at depth *k* that appear heterozygous
-* `MLE_tk`: maximum likelihood estimate for τk
+* depth: read depth (*k*)
+* totsites: number of sites with depth *k*
+* propRA: proportion of genotypes at depth *k* that appear heterozygous
+* MLE_tk: maximum likelihood estimate for τk
 
 Depending on how this these results look, one could extend the calculations to higher read depth values by modifying the `max_kvalue` variable in the script.
 
@@ -96,11 +96,11 @@ Arguments:
 > `python MLEtk.byindivs.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.byindivs.txt 291`
 
 The output file contains the following data:
-* `indiv`: individual sample index
-* `depth`: read depth (*k*)
-* `totsites`: number of sites with depth *k*
-* `propRA`: proportion of genotypes at depth *k* that appear heterozygous
-* `MLE_tk`: maximum likelihood estimate for τk
+* indiv: individual sample index
+* depth: read depth (*k*)
+* totsites: number of sites with depth *k*
+* propRA: proportion of genotypes at depth *k* that appear heterozygous
+* MLE_tk: maximum likelihood estimate for τk
 
 ## Step 3: Re-estimate allele frequencies (*q*s) using MLEq.reest.py.
 
@@ -123,11 +123,11 @@ Arguments:
 > `python MLEq.reest.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.txt toy.reestQs.txt 291`
 
 The output file contains the following data:
-* `contig`: identifier of contig or scaffold in ref genome
-* `position`: position of SNP
-* `indivs`: number of individuals with data for the SNP
-* `initial_q`: initial maximum likelihood estimate for reference allele frequency (*q*) from input qs file
-* `reestimate_q`: new ML estimate for *q*
+* contig: identifier of contig or scaffold in ref genome
+* position: position of SNP
+* indivs: number of individuals with data for the SNP
+* initial_q: initial maximum likelihood estimate for reference allele frequency (*q*) from input qs file
+* reestimate_q: new ML estimate for *q*
 
 
 ## Step 4: Estimate associations with phenotype using MLE 
@@ -155,23 +155,23 @@ Arguments:
 > `python MLE.phenoassoc.py toy.poly.vcf toy.reestQs.txt toy.poly.tks.txt phenos.txt 291 StamenL 0`
 
 This file outputs the following data for each SNP in the VCF (MLE = maximum likelihood estimate):
-* `contig`: identifier of contig or scaffold in ref genome
-* `position`: position of SNP
-* `count`: number of individuals with data for the SNP
-* `q`: allele frequency (read in from the input re-est qs file)
-* `h0_mu`: MLE for sample mean phenotype under null hypothesis that phenotype does not depend on genotype
-* `h0_sigma`: MLE for sample variance in phenotype under null hypothesis
-* `h1_muRR`: MLE for mean phenotype for ref allele homozygotes under alternative hypothesis that genotypes differ in mean phenotype
-* `h1_a`: MLE for additive effect of alt allele under alternative hypothesis
-* `h1_sigma`: MLE for variance in phenotype for a given genotype under alternative hypothesis
-* `LRT`: likelihood ratio test statistic for comparing the alternative hypothesis to the null hypothesis 
-* `pval`: significance of the likelihood ratio test statistic (using chi-square distribution with 1 df)
+* contig: identifier of contig or scaffold in ref genome
+* position: position of SNP
+* count: number of individuals with data for the SNP
+* q: allele frequency (read in from the input re-est qs file)
+* h0_mu: MLE for sample mean phenotype under null hypothesis that phenotype does not depend on genotype
+* h0_sigma: MLE for sample variance in phenotype under null hypothesis
+* h1_muRR: MLE for mean phenotype for ref allele homozygotes under alternative hypothesis that genotypes differ in mean phenotype
+* h1_a: MLE for additive effect of alt allele under alternative hypothesis
+* h1_sigma: MLE for variance in phenotype for a given genotype under alternative hypothesis
+* LRT: likelihood ratio test statistic for comparing the alternative hypothesis to the null hypothesis 
+* pval: significance of the likelihood ratio test statistic (using chi-square distribution with 1 df)
 
-## Preparing your VCF file
+# Preparing your VCF file
 
 SNP-skimming takes a .vcf file as input. 
 
-Here we describe the steps we like to take to generate this file, but other methods could be used.  
+Here I describe the steps we like to take to generate this file, but other methods could be used.  
 (In this case, `refcontigs.fa` refers to reference genome assembly and `ind1.fq` is sequence data for one sample)  
 
 1. **Start with a single .fastq file for each individual** that has been filtered and trimmed for quality and to remove adapter sequence.  One option is steps 1 & 2 of ipyrad -> http://ipyrad.readthedocs.io
@@ -192,4 +192,9 @@ Here we describe the steps we like to take to generate this file, but other meth
     `samtools index ind1.RG.bam ind1.RG.bai`
 
 1. **Call variants using GATK** -> https://software.broadinstitute.org/gatk/  
-    `java -jar GenomeAnalysisTK.jar -R refcontigs.fa -T UnifiedGenotyper -I ind1.RG.bam -I ind2.RG.bam -I ind3.RG.bam -ploidy 2 -rf BadCigar -o data.vcf`
+    java -jar GenomeAnalysisTK.jar -R refcontigs.fa -T UnifiedGenotyper -I ind1.RG.bam -I ind2.RG.bam -I ind3.RG.bam -ploidy 2 -rf BadCigar -o data.vcf`
+
+
+# Filtering your VCF file
+
+There are several existing tools for filtering VCF files (e.g., vcftools). I use the provided script:

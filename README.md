@@ -24,9 +24,9 @@ In addition, this script discards sites that are actually fixed for the ref or t
 
 > python MLEq.n.filter.py [input VCF] [output prefix] [n indivs]  
 
-- **input VCF**: this is the VCF you want to use for your analyses  
-- **output prefix**: prefix for output filenames  
-- **n indivs**: number of individuals with data in the VCF file  
+**input VCF**: this is the VCF you want to use for your analyses  
+**output prefix**: prefix for output filenames  
+**n indivs**: number of individuals with data in the VCF file  
 
 ### Example
 
@@ -34,19 +34,19 @@ In addition, this script discards sites that are actually fixed for the ref or t
 python MLEq.n.filter.py toy.vcf toy 291
 ```
 
-This creates four output files: 
-1. **\<prefix\>.poly.vcf** <- A new .vcf file containing lines for non-fixed sites. (Header lines are removed)
-2. **\<prefix\>.fixed.vcf** <- A new .vcf file containing lines for fixed sites. (Header lines removed).
-3. **\<prefix\>.poly.Qs.txt** <- A tab-delimited file containing allele frequency estimates for ref base for non-fixed SNPs.
-4. **\<prefix\>.fixed.Qs.txt** <- A tab-delimited file containing allele frequency estimates for ref base for fixed SNPs.
+#### This creates four output files: 
+**\<prefix\>.poly.vcf** <- A new .vcf file containing lines for non-fixed sites. (Header lines are removed)  
+**\<prefix\>.fixed.vcf** <- A new .vcf file containing lines for fixed sites. (Header lines removed)  
+**\<prefix\>.poly.Qs.txt** <- A tab-delimited file containing allele frequency estimates for ref base for non-fixed SNPs.  
+**\<prefix\>.fixed.Qs.txt** <- A tab-delimited file containing allele frequency estimates for ref base for fixed SNPs.  
 
 The **\<prefix\>.poly.vcf** and **\<prefix\>.poly.Qs.txt** files are used in downstream analyses, but users may also find the other two files useful to have.
-
-The allele frequency output files contain the following information:
-- **contig**: identifier of contig or scaffold in ref genome
-- **position**: position of SNP
-- **indivs**: number of individuals with data for the SNP
-- **MLE_q**: maximum likelihood estimate for reference allele frequency (*q*)
+ 
+#### The allele frequency output files contain the following information:
+**contig**: identifier of contig or scaffold in ref genome  
+**position**: position of SNP  
+**indivs**: number of individuals with data for the SNP  
+**MLE_q**: maximum likelihood estimate for reference allele frequency (*q*)  
 
 
 ## Step 2: Estimate τk values across all sites and all individuals using MLEtk.allindivs.py

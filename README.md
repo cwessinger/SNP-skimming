@@ -22,22 +22,22 @@ In addition, this script discards sites that are actually fixed for the ref or t
 
 #### Usage
 
-> python MLEq.n.filter.py [input VCF] [output prefix] [# indivs]
+> python MLEq.n.filter.py [input VCF] [output prefix] [n indivs]
 
 Arguments:
 * input VCF: this is the VCF you want to use for your analyses
 * output prefix: prefix for output filenames
-* # indivs: number of individuals with data in the VCF file
+* n indivs: number of individuals with data in the VCF file
 
 #### Example
 
-> `python MLEq.n.filter.py snps1.1.vcf snps1.2 291`
+> `python MLEq.n.filter.py toy.vcf toy 291`
 
 This creates four output files: 
-1. `<prefix>.poly.vcf` <- A new .vcf file containing lines for non-fixed sites. (Header lines are removed)
-1. `<prefix>.fixed.vcf` <- A new .vcf file containing lines for fixed sites. (Header lines removed).
-1. `<prefix>.poly.Qs.txt` <- A tab-delimited file containing allele frequency estimates for ref base for non-fixed SNPs.
-1. `<prefix>.fixed.Qs.txt` <- A tab-delimited file containing allele frequency estimates for ref base for fixed SNPs.
+1. `toy.poly.vcf` <- A new .vcf file containing lines for non-fixed sites. (Header lines are removed)
+1. `toy.fixed.vcf` <- A new .vcf file containing lines for fixed sites. (Header lines removed).
+1. `toy.poly.Qs.txt` <- A tab-delimited file containing allele frequency estimates for ref base for non-fixed SNPs.
+1. `toy.fixed.Qs.txt` <- A tab-delimited file containing allele frequency estimates for ref base for fixed SNPs.
 
 The `<prefix>.poly.vcf` and `<prefix>.poly.Qs.txt` files are used in downstream analyses, but users may also find the other two files useful to have.
 
@@ -50,6 +50,13 @@ The input files should be `<prefix>.poly.vcf` and `<prefix>.poly.Qs.txt` files o
 #### Usage
 
 > python MLEtk.allindivs.py [input VCF] [input qs file] [output τks file] [# indivs]
+
+Arguments:
+* input VCF: this should be the `<prefix>.poly.vcf` file output by **MLEq.n.filter.py**
+* input qs file: this should be the `<prefix>.poly.Qs.txt` file output by **MLEq.n.filter.py**
+* output τks file: desired filename for output
+* n indivs: number of individuals with data in the VCF file
+
 
 #### Example
 

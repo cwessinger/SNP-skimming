@@ -20,15 +20,15 @@ Use **MLEq.n.filter.py** to find maximum likelihood estimator for frequency of t
 
 In addition, this script discards sites that are actually fixed for the ref or the alt allele. Sometimes these sites sneak through despite filtering. (Basically, if the maximum likelihood estimate for *q* is 0 or 1, the site is discarded).
 
-#### Usage
+### Usage
 
 > python MLEq.n.filter.py [input VCF] [output prefix] [n indivs]
 
-* input VCF: this is the VCF you want to use for your analyses
-* output prefix: prefix for output filenames
-* n indivs: number of individuals with data in the VCF file
+- input VCF: this is the VCF you want to use for your analyses
+- output prefix: prefix for output filenames
+- n indivs: number of individuals with data in the VCF file
 
-#### Example
+### Example
 
 ```
 python MLEq.n.filter.py toy.vcf toy 291
@@ -43,17 +43,17 @@ This creates four output files:
 The **\<prefix\>.poly.vcf** and **\<prefix\>.poly.Qs.txt** files are used in downstream analyses, but users may also find the other two files useful to have.
 
 The allele frequency output files contain the following information:
-1. contig: identifier of contig or scaffold in ref genome
-2. position: position of SNP
-* indivs: number of individuals with data for the SNP
-* MLE_q: maximum likelihood estimate for reference allele frequency (*q*)
+- contig: identifier of contig or scaffold in ref genome
+- position: position of SNP
+- indivs: number of individuals with data for the SNP
+- MLE_q: maximum likelihood estimate for reference allele frequency (*q*)
 
 
 ## Step 2: Estimate τk values across all sites and all individuals using MLEtk.allindivs.py
 
-Use **MLEtk.allindivs.py** to find maximum likelihood estimator for τk, the probability of detecting a heterozygote for read depth k. This estimate is based on data across all sites and all individuals for a given read depth. By default, the script produces a file of estimated τk values for k ranging from 1-15 reads. However, one could extend this to higher read depths if τk values in this range have not yet attained 1.
+Use **MLEtk.allindivs.py** to find maximum likelihood estimator for τk, the probability of detecting a heterozygote for read depth *k*. This estimate is based on data across all sites and all individuals for a given read depth. By default, the script produces a file of estimated τk values for *k* ranging from 1-15 reads. However, one could extend this to higher read depths if τk values hasn't reached 1 by *k*=15.
 
-#### Usage
+### Usage
 
 > python MLEtk.allindivs.py [input VCF] [input qs file] [output τks file] [n indivs]
 
@@ -63,9 +63,11 @@ Arguments:
 * output τks file: desired filename for output
 * n indivs: number of individuals with data in the VCF file
 
-#### Example
+### Example
 
-> `python MLEtk.allindivs.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.txt 291`
+```
+python MLEtk.allindivs.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.txt 291
+```
 
 The output file contains the following data:
 * depth: read depth (*k*)
@@ -81,7 +83,7 @@ Before proceeding to step 3, it is advisable to examine how τk values vary acro
 
 Use **MLEtk.byindivs.py** to find τk values for each individual.
 
-#### Usage
+### Usage
 
 > python MLEtk.byindivs.py [input VCF] [input qs file] [output τks file] [n indivs]
 
@@ -92,9 +94,11 @@ Arguments:
 * n indivs: number of individuals with data in the VCF file
 
 
-#### Example
+### Example
 
-> `python MLEtk.byindivs.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.byindivs.txt 291`
+```
+python MLEtk.byindivs.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.byindivs.txt 291
+```
 
 The output file contains the following data:
 * indiv: individual sample index
@@ -107,7 +111,7 @@ The output file contains the following data:
 
 Use **MLEq.reest.py** to re-estimate frequency of the reference allele, given read depth and global τk values estimated in step 2. 
 
-#### Usage
+### Usage
 
 > python MLEq.reest.py [input VCF] [input qs file] [input τks file] [output re-est qs file] [n indivs]
 
@@ -119,9 +123,10 @@ Arguments:
 * n indivs: number of individuals with data in the VCF file
 
 
-#### Example
-
-> `python MLEq.reest.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.txt toy.reestQs.txt 291`
+### Example
+```
+python MLEq.reest.py toy.poly.vcf toy.poly.Qs.txt toy.poly.tks.txt toy.reestQs.txt 291
+```
 
 The output file contains the following data:
 * contig: identifier of contig or scaffold in ref genome
@@ -137,7 +142,7 @@ Use **MLE.phenoassoc.py** to estimate associations between sites in the VCF file
 
 This script optimizes multiple parameters and can be time-consuming for large VCF files. **I recommend splitting the VCF file (and corresponding allele frequency file) into many subsamples and running parallel jobs,** then concatenating the output files for analysis.
 
-#### Usage
+### Usage
 
 > python MLE.phenoassoc.py [input VCF] [input re-est qs file] [input τks file] [input phenos file] [n indivs] [pheno name] [VCF ID]
 
@@ -151,9 +156,11 @@ Arguments:
 * pheno name: name of phenotype to be name of the focal phenotype to be analyzed and should match the column header in the phenotype file.
 * VCF ID: the identifier (e.g., an integer) for subsample VCF file. This VCF ID is incorporated into the output file name. If one prefers not to split the file into parallel jobs, just put a placeholder here.
 
-#### Example
+### Example
 
-> `python MLE.phenoassoc.py toy.poly.vcf toy.reestQs.txt toy.poly.tks.txt phenos.txt 291 StamenL 0`
+```
+python MLE.phenoassoc.py toy.poly.vcf toy.reestQs.txt toy.poly.tks.txt phenos.txt 291 StamenL 0
+```
 
 This file outputs the following data for each SNP in the VCF (MLE = maximum likelihood estimate):
 * contig: identifier of contig or scaffold in ref genome

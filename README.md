@@ -1,27 +1,33 @@
 # SNP-skimming
 Python scripts to perform SNP-skimming
 
-## Important things about these Python scripts
+## Important notes
 
-- **These scripts require Python 2, NumPy, SciPy, and Pandas**
+- These scripts require Python 2, NumPy, SciPy, and Pandas.
 
-- The Python scripts assume a single population appears in the VCF file and all individual samples in the VCF are being analyzed. In this case, one provides the number of individuals as an argument to the script. 
+- The scripts assume a single population appears in the VCF file and all individual samples in the VCF are being analyzed. In this case, one provides the number of individuals as an argument to the script. 
 
   If a user has a more complicated scenario where the individuals to be analyzed are a subset of individuals that appear in the VCF file, one should modify the `indivRange` variable within the script to indicate the columns in which the samples to be analyzed appear in the VCF file.
 
-- The scripts take as input a .vcf file that has been filtered to the user's specification, in terms of allowed amount of missing data or range of allele frequency.  
-  - For help on generating a .vcf file, see **Preparing your VCF file** below.  
-  - For help filtering a .vcf file based on missing data and range of allele frequencies (a guess based on the proportion of reads across all individuals that match the ref allele) see **Filtering VCF file** below.
+- The scripts take as input a VCF file that has been filtered to the user's specification, in terms of allowed amount of missing data or range of allele frequency.  
+  - For help on generating a VCF file, see **Preparing your VCF file** below.  
+  - For help filtering a VCF file based on mapping quality, missing data, and very roughly estimated allele frequency, see **Filtering VCF file** below.
+
 
 ## Step 1: Estimate allele frequencies using MLEq.n.filter.py
 
 Use **MLEq.n.filter.py** to find maximum likelihood estimator for frequency of the ref allele (_q_) for each site in the VCF file.  
 
-In addition, this script discards sites that are actually fixed for the ref or the alt allele. Sometimes these sites sneak through despite filtering.
+In addition, this script discards sites that are actually fixed for the ref or the alt allele. Sometimes these sites sneak through despite filtering. (Basically, if the maximum likelihood estimate for *q* is 0 or 1, the site is discarded).
 
 #### Usage
 
 > python MLEq.n.filter.py [input VCF] [output prefix] [# indivs]
+
+Arguments:
+* input VCF: this is the VCF you want to use for your analyses
+* output prefix: prefix for output filenames
+* # indivs: number of individuals with data in the VCF file
 
 #### Example
 

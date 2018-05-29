@@ -213,4 +213,62 @@ java -jar GenomeAnalysisTK.jar -R refcontigs.fa -T UnifiedGenotyper -I ind1.RG.b
 
 # Filtering your VCF file
 
-There are several existing tools for filtering VCF files (e.g., vcftools). I use the provided script:
+There are several existing tools for filtering VCF files (e.g., vcftools).  
+
+Another option is to use **filterVCF.py**
+
+This script filters a VCF file based on mapping quality (default minimum mapping quality is 20), missing data, and proportion of reads that match the Ref allele (across all individuals).
+
+### Usage
+
+> filterVCF.py [input VCF] [output filtered vcf] [n indivs] [min indivs per site]
+
+* input VCF: a VCF file output by GATK
+* output filtered VCF: desired output VCF filename
+* n indivs: number of individuals included in the VCF file
+* min indivs per site: minimum number of individuals with data for site to be written to output VCF
+
+### Example
+
+```
+python filterVCF.py toy.vcf toy.filtered.vcf 291 100
+```
+
+
+# Simulations
+
+**data.simulations.py** simulates phenotype and genotype data for a locus that affects phenotype and shallow sequence data. 
+
+### Usage
+
+> data.simulations.py [outfile]
+
+Critical variables in the script to be modified:
+* `nreps`: number of replicate simulations
+* `nsamples`: number of individuals sampled from the population
+* `meandepth`: mean sequence read depth
+* `true_q`: population allele frequency of the simulated locus
+* `true_a`: additive effect of the simulated locus (effect of Alt allele)
+* `true_muRR`: mean phenotype of homozygous (Ref allele) individuals
+* `Vp`: phenotypic variance in the population
+
+
+
+All these variables will have to be changed, depending on your experimental design, details of phenotype, etc.  
+Note that if you model a locus with no effect on phenotype, set `true_a` = 0 and `true_muRR` = population mean phenotype.  
+After modeling phenotype and genotype across all individuals, as well as missing data across individuals, this script then uses the same likelihood model as in **MLE.phenoassoc.py** to test for an association between genotype and phenotype.
+
+
+### Example
+
+```
+python python data.simulations.py sim.out.txt
+```
+
+This file outputs the following data for each replicate simulation (MLE = maximum likelihood estimate):
+* rep: index for replicate
+* q: replicate's MLE for allele frequency for reference allele (*q*)
+* muRR: replicate's MLE for mean phenotype for ref allele homozygote under hypothesis that genotypes differ in mean phenotype
+* sigma: replicate's MLE for phenotypic variance
+* a: replicate's MLE for additive effect of Alt allele
+* LRT: likelihood ratio test statistic value
